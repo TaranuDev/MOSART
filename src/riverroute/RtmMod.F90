@@ -1631,9 +1631,9 @@ module RtmMod
              ! remove withdrawals for all sectors and add the return flows to wr (main channel)
              ! the return flows are scaled to the actual withdrawals (irrigation have no return flow)
              TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) - irrig_volume - dom_volume &
-                     - elec_volume - liv_volume - mfc_volume - min_volume + (rtmCTL%qdom_actual/rtmCTL%qdom_withd)*(rtmCTL%qdom_rf*coupling_period) &
-                     + (rtmCTL%qliv_actual/rtmCTL%qliv_withd)*(rtmCTL%qliv_rf*coupling_period) + (rtmCTL%qelec_actual/rtmCTL%qelec_withd)*(rtmCTL%qelec_rf*coupling_period) &
-                     + (rtmCTL%qmfc_actual/rtmCTL%qmfc_withd)*(rtmCTL%qmfc_rf*coupling_period) + (rtmCTL%qmin_actual/rtmCTL%qmin_withd)*(rtmCTL%qmin_rf*coupling_period) 
+                     - elec_volume - liv_volume - mfc_volume - min_volume + (rtmCTL%qdom_actual(nr)/rtmCTL%qdom_withd(nr))*(rtmCTL%qdom_rf(nr)*coupling_period) &
+                     + (rtmCTL%qliv_actual(nr)/rtmCTL%qliv_withd(nr))*(rtmCTL%qliv_rf(nr)*coupling_period) + (rtmCTL%qelec_actual(nr)/rtmCTL%qelec_withd(nr))*(rtmCTL%qelec_rf(nr)*coupling_period) &
+                     + (rtmCTL%qmfc_actual(nr)/rtmCTL%qmfc_withd(nr))*(rtmCTL%qmfc_rf(nr)*coupling_period) + (rtmCTL%qmin_actual(nr)/rtmCTL%qmin_withd(nr))*(rtmCTL%qmin_rf(nr)*coupling_period) 
    
    
    
