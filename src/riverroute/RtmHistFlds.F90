@@ -177,7 +177,7 @@ module RtmHistFlds
      
          call RtmHistAddfld (fname='QELEC_ACTUAL', units='m3/s',  &
               avgflag='A', long_name='Actual thermoelectric usage (if limited by river storage)', &
-              ptr_rof=rtmCTL%qlec_actual, default='inactive')
+              ptr_rof=rtmCTL%qelec_actual, default='inactive')
      
          call RtmHistAddfld (fname='QLIV_ACTUAL', units='m3/s',  &
               avgflag='A', long_name='Actual livestock usage (if limited by river storage)', &
