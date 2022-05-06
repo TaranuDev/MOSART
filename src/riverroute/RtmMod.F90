@@ -181,11 +181,11 @@ module RtmMod
        character(len=256):: locfn                ! local file name
        character(len=16384) :: rList             ! list of fields for SM multiply
        integer           :: unitn                ! unit for namelist file
-   #ifdef NDEBUG
+   !#ifdef NDEBUG
        integer,parameter :: dbug = 0             ! 0 = none, 1=normal, 2=much, 3=max
-   #else
-       integer,parameter :: dbug = 3             ! 0 = none, 1=normal, 2=much, 3=max
-   #endif
+   !#else
+   !    integer,parameter :: dbug = 3             ! 0 = none, 1=normal, 2=much, 3=max
+   !#endif
        logical :: lexist                         ! File exists
        character(len= 7) :: runtyp(4)            ! run type
        integer ,allocatable :: gindex(:)         ! global index
