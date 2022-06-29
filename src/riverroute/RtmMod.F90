@@ -1524,7 +1524,7 @@ module RtmMod
        ! Just consider land points and only remove liquid water 
        !-----------------------------------
    
-       call t_startf('mosartr_irrig')
+       call t_startf('mosartr_sectorwater')
        nt = 1 
        rtmCTL%qirrig_actual = 0._r8
        rtmCTL%qdom_actual = 0._r8
@@ -1555,7 +1555,7 @@ module RtmMod
                      ! if water missing for domestic, domestic have what's there, all the other usages have 0
                 rtmCTL%qsub(nr,nt) = rtmCTL%qsub(nr,nt) &
                        + (TRunoff%wr(nr,nt) - dom_volume - liv_volume &
-                       - elec_volume - mfc_volume - min_volume)  / coupling_period
+                       - elec_volume - mfc_volume - min_volume - irrig_volume)  / coupling_period
                 TRunoff%qsub(nr,nt) = rtmCTL%qsub(nr,nt)
                 dom_volume = TRunoff%wr(nr,nt) 
                 liv_volume = 0._r8
@@ -1567,8 +1567,8 @@ module RtmMod
              ! if water missing for livestock after having taken domestic, livestock takes what is left 
              ! following usages have 0
                rtmCTL%qsub(nr,nt) = rtmCTL%qsub(nr,nt) &
-                       + (TRunoff%wr(nr,nt) - irrig_volume - dom_volume - liv_volume &
-                       - elec_volume - mfc_volume - min_volume)  / coupling_period
+                       + (TRunoff%wr(nr,nt)  - dom_volume - liv_volume &
+                       - elec_volume - mfc_volume - min_volume - irrig_volume)  / coupling_period
                 TRunoff%qsub(nr,nt) = rtmCTL%qsub(nr,nt)
                 liv_volume = TRunoff%wr(nr,nt) - dom_volume
                 elec_volume = 0._r8
@@ -1579,8 +1579,8 @@ module RtmMod
              ! if water missing for thermoelectric after having taken domestic and livestock,
              ! thermoelectric  takes what is left , following usages have 0
                rtmCTL%qsub(nr,nt) = rtmCTL%qsub(nr,nt) &
-                       + (TRunoff%wr(nr,nt) - irrig_volume - dom_volume - liv_volume &
-                       - elec_volume - mfc_volume - min_volume)  / coupling_period
+                       + (TRunoff%wr(nr,nt) - dom_volume - liv_volume &
+                       - elec_volume - mfc_volume - min_volume - irrig_volume)  / coupling_period
                 TRunoff%qsub(nr,nt) = rtmCTL%qsub(nr,nt)
                 elec_volume = TRunoff%wr(nr,nt) - dom_volume - liv_volume
                 mfc_volume = 0._r8
@@ -1590,8 +1590,8 @@ module RtmMod
              ! if water missing for manufacturing after having taken domestic, livestock and thermoelectric
              ! manufacturing takes what is left , following usages have 0
                 rtmCTL%qsub(nr,nt) = rtmCTL%qsub(nr,nt) &
-                       + (TRunoff%wr(nr,nt) - irrig_volume - dom_volume - liv_volume &
-                       - elec_volume - mfc_volume - min_volume)  / coupling_period
+                       + (TRunoff%wr(nr,nt) - dom_volume - liv_volume &
+                       - elec_volume - mfc_volume - min_volume - irrig_volume)  / coupling_period
                 TRunoff%qsub(nr,nt) = rtmCTL%qsub(nr,nt)
                 mfc_volume = TRunoff%wr(nr,nt) - dom_volume - liv_volume - elec_volume
                 min_volume = 0._r8
@@ -1600,16 +1600,16 @@ module RtmMod
               ! if water missing for mining after having taken domestic, livestock, thermoelectric and manufacturing
               ! mining takes what is left , following usages have 0
                 rtmCTL%qsub(nr,nt) = rtmCTL%qsub(nr,nt) &
-                       + (TRunoff%wr(nr,nt) - irrig_volume - dom_volume - liv_volume &
-                       - elec_volume - mfc_volume - min_volume)  / coupling_period
+                       + (TRunoff%wr(nr,nt)  - dom_volume - liv_volume &
+                       - elec_volume - mfc_volume - min_volume - irrig_volume)  / coupling_period
                 TRunoff%qsub(nr,nt) = rtmCTL%qsub(nr,nt)
                 min_volume = TRunoff%wr(nr,nt) -dom_volume-liv_volume-elec_volume-mfc_volume
                 irrig_volume = 0._r8
              elseif(irrig_volume > TRunoff%wr(nr,nt)-dom_volume-liv_volume-elec_volume-mfc_volume-min_volume) then
               ! if water missing for irrigation after having taken all others, irrigation takes what is left
                 rtmCTL%qsub(nr,nt) = rtmCTL%qsub(nr,nt) &
-                       + (TRunoff%wr(nr,nt) - irrig_volume - dom_volume - liv_volume &
-                       - elec_volume - mfc_volume - min_volume)  / coupling_period
+                       + (TRunoff%wr(nr,nt) - dom_volume - liv_volume &
+                       - elec_volume - mfc_volume - min_volume - irrig_volume)  / coupling_period
                 TRunoff%qsub(nr,nt) = rtmCTL%qsub(nr,nt)
                 irrig_volume = TRunoff%wr(nr,nt) -dom_volume-liv_volume-elec_volume-mfc_volume-min_volume
               endif
@@ -1631,15 +1631,37 @@ module RtmMod
              ! remove withdrawals for all sectors and add the return flows to wr (main channel)
              ! the return flows are scaled to the actual withdrawals (irrigation have no return flow)
              TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) - irrig_volume - dom_volume &
-                     - elec_volume - liv_volume - mfc_volume - min_volume + (rtmCTL%qdom_actual(nr)/rtmCTL%qdom_withd(nr))*(rtmCTL%qdom_rf(nr)*coupling_period) &
-                     + (rtmCTL%qliv_actual(nr)/rtmCTL%qliv_withd(nr))*(rtmCTL%qliv_rf(nr)*coupling_period) + (rtmCTL%qelec_actual(nr)/rtmCTL%qelec_withd(nr))*(rtmCTL%qelec_rf(nr)*coupling_period) &
-                     + (rtmCTL%qmfc_actual(nr)/rtmCTL%qmfc_withd(nr))*(rtmCTL%qmfc_rf(nr)*coupling_period) + (rtmCTL%qmin_actual(nr)/rtmCTL%qmin_withd(nr))*(rtmCTL%qmin_rf(nr)*coupling_period) 
-   
+                     - elec_volume - liv_volume - mfc_volume - min_volume
+            
+            if (rtmCTL%qdom_withd(nr) /= 0) then
+               rtmCTL%qdom_rf(nr) = (rtmCTL%qdom_actual(nr)/rtmCTL%qdom_withd(nr))*rtmCTL%qdom_rf(nr)
+               TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) + rtmCTL%qdom_rf(nr)*coupling_period
+            endif
+
+            if (rtmCTL%qliv_withd(nr) /= 0) then
+               rtmCTL%qliv_rf(nr) = (rtmCTL%qliv_actual(nr)/rtmCTL%qliv_withd(nr))*rtmCTL%qliv_rf(nr)
+               TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) + rtmCTL%qliv_rf(nr)*coupling_period
+            endif
+            
+            if (rtmCTL%qelec_withd(nr) /= 0) then
+               rtmCTL%qelec_rf(nr) = (rtmCTL%qelec_actual(nr)/rtmCTL%qelec_withd(nr))*rtmCTL%qelec_rf(nr)
+               TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) + rtmCTL%qelec_rf(nr)*coupling_period
+            endif
+            
+            if (rtmCTL%qmfc_withd(nr) /= 0) then
+               rtmCTL%qmfc_rf(nr) = (rtmCTL%qmfc_actual(nr)/rtmCTL%qmfc_withd(nr))*rtmCTL%qmfc_rf(nr)
+               TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) + rtmCTL%qmfc_rf(nr)*coupling_period
+            endif
+            
+            if (rtmCTL%qmin_withd(nr) /= 0) then
+               rtmCTL%qmin_rf(nr) = (rtmCTL%qmin_actual(nr)/rtmCTL%qmin_withd(nr))*rtmCTL%qmin_rf(nr)
+               TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) + rtmCTL%qmin_rf(nr)*coupling_period
+            endif
    
    
    !scs       endif
        enddo
-       call t_stopf('mosartr_irrig')
+       call t_stopf('mosartr_sectorwater')
    
    
        !-----------------------------------
