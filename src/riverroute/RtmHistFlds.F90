@@ -171,25 +171,46 @@ module RtmHistFlds
               avgflag='A', long_name='Actual irrigation (if limited by river storage)', &
               ptr_rof=rtmCTL%qirrig_actual, default='inactive')
      
-         call RtmHistAddfld (fname='QDOM_ACTUAL', units='m3/s',  &
-                 avgflag='A', long_name='Actual domestic usage (if limited by river storage)', &
-              ptr_rof=rtmCTL%qdom_actual, default='inactive')
+         call RtmHistAddfld (fname='QDOM_ACTUAL_WITHD', units='m3/s',  &
+                 avgflag='A', long_name='Actual domestic withdrawal satisfied from river network (if limited by river storage)', &
+              ptr_rof=rtmCTL%qdom_actual_withd, default='inactive')
      
-         call RtmHistAddfld (fname='QELEC_ACTUAL', units='m3/s',  &
-              avgflag='A', long_name='Actual thermoelectric usage (if limited by river storage)', &
-              ptr_rof=rtmCTL%qelec_actual, default='inactive')
+         call RtmHistAddfld (fname='QELEC_ACTUAL_WITHD', units='m3/s',  &
+              avgflag='A', long_name='Actual thermoelectric withdrawal satisfied from river network (if limited by river storage)', &
+              ptr_rof=rtmCTL%qelec_actual_withd, default='inactive')
      
-         call RtmHistAddfld (fname='QLIV_ACTUAL', units='m3/s',  &
-              avgflag='A', long_name='Actual livestock usage (if limited by river storage)', &
-              ptr_rof=rtmCTL%qliv_actual, default='inactive')
+         call RtmHistAddfld (fname='QLIV_ACTUAL_WITHD', units='m3/s',  &
+              avgflag='A', long_name='Actual livestock withdrawal satisfied from river network (if limited by river storage)', &
+              ptr_rof=rtmCTL%qliv_actual_withd, default='inactive')
      
-         call RtmHistAddfld (fname='QMFC_ACTUAL', units='m3/s',  &
-              avgflag='A', long_name='Actual manufacturing usage (if limited by river storage)', &
-              ptr_rof=rtmCTL%qmfc_actual, default='inactive')
+         call RtmHistAddfld (fname='QMFC_ACTUAL_WITHD', units='m3/s',  &
+              avgflag='A', long_name='Actual manufacturing withdrawal satisfied from river network (if limited by river storage)', &
+              ptr_rof=rtmCTL%qmfc_actual_withd, default='inactive')
      
-         call RtmHistAddfld (fname='QMIN_ACTUAL', units='m3/s',  &
-              avgflag='A', long_name='Actual mining usage (if limited by river storage)', &
-              ptr_rof=rtmCTL%qmin_actual, default='inactive')
+         call RtmHistAddfld (fname='QMIN_ACTUAL_WITHD', units='m3/s',  &
+              avgflag='A', long_name='Actual mining withdrawal satisfied from river network (if limited by river storage)', &
+              ptr_rof=rtmCTL%qmin_actual_withd, default='inactive')
+
+         call RtmHistAddfld (fname='QDOM_ACTUAL_RF', units='m3/s',  &
+                 avgflag='A', long_name='Domestic recycled water which actually returns to the river network (if limited by river storage)', &
+              ptr_rof=rtmCTL%qdom_actual_rf, default='inactive')
+     
+         call RtmHistAddfld (fname='QELEC_ACTUAL_RF', units='m3/s',  &
+              avgflag='A', long_name='Thermoelectric recycled water which actually returns to the river network (if limited by river storage)', &
+              ptr_rof=rtmCTL%qelec_actual_rf, default='inactive')
+     
+         call RtmHistAddfld (fname='QLIV_ACTUAL_RF', units='m3/s',  &
+              avgflag='A', long_name='Livestock recycled water which actually returns to the river network (if limited by river storage)', &
+              ptr_rof=rtmCTL%qliv_actual_rf, default='inactive')
+     
+         call RtmHistAddfld (fname='QMFC_ACTUAL_RF', units='m3/s',  &
+              avgflag='A', long_name='Manufacturing recycled water which actually returns to the river network (if limited by river storage)', &
+              ptr_rof=rtmCTL%qmfc_actual_rf, default='inactive')
+     
+         call RtmHistAddfld (fname='QMIN_ACTUAL_RF', units='m3/s',  &
+              avgflag='A', long_name='Mining recycled water which actually returns to the river network (if limited by river storage)', &
+              ptr_rof=rtmCTL%qmin_actual_rf, default='inactive')
+     
      
          ! Print masterlist of history fields
      

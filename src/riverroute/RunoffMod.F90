@@ -90,11 +90,16 @@ module RunoffMod
       real(r8), pointer :: qmin_withd(:)  !mining withdrawal
       real(r8), pointer :: qmin_rf(:)  !mining return flow
       real(r8), pointer :: qirrig_actual(:) ! minimum of irrigation and available main channel storage
-      real(r8), pointer :: qdom_actual(:) ! minimum of domestic and available main channel storage
-      real(r8), pointer :: qliv_actual(:) ! minimum of livestock  and available main channel storage 
-      real(r8), pointer :: qelec_actual(:) ! minimum of thermoelectric  and available main channel storage 
-      real(r8), pointer :: qmfc_actual(:) ! minimum of manufacture  and available main channel storage 
-      real(r8), pointer :: qmin_actual(:) ! minimum of mining  and available main channel storage 
+      real(r8), pointer :: qdom_actual_withd(:) ! minimum of domestic and available main channel storage
+      real(r8), pointer :: qliv_actual_withd(:) ! minimum of livestock  and available main channel storage 
+      real(r8), pointer :: qelec_actual_withd(:) ! minimum of thermoelectric  and available main channel storage 
+      real(r8), pointer :: qmfc_actual_withd(:) ! minimum of manufacture  and available main channel storage 
+      real(r8), pointer :: qmin_actual_withd(:) ! minimum of mining  and available main channel storage 
+      real(r8), pointer :: qdom_actual_rf(:) ! return flow which should actually return to the river network
+      real(r8), pointer :: qliv_actual_rf(:) ! return flow which should actually return to the river network
+      real(r8), pointer :: qelec_actual_rf(:) ! return flow which should actually return to the river network
+      real(r8), pointer :: qmfc_actual_rf(:) ! return flow which should actually return to the river network
+      real(r8), pointer :: qmin_actual_rf(:) ! return flow which should actually return to the river network
  
       !    - history (currently needed)
       real(r8), pointer :: runofflnd_nt1(:)
@@ -355,19 +360,24 @@ module RunoffMod
               rtmCTL%qirrig(begr:endr),            &
               rtmCTL%qdom_withd(begr:endr),        &
               rtmCTL%qdom_rf(begr:endr),           &
-              rtmCTL%qdom_actual(begr:endr),       &
+              rtmCTL%qdom_actual_withd(begr:endr), &
+              rtmCTL%qdom_actual_rf(begr:endr),    &
               rtmCTL%qliv_withd(begr:endr),        &
               rtmCTL%qliv_rf(begr:endr),           &
-              rtmCTL%qliv_actual(begr:endr),       &
+              rtmCTL%qliv_actual_withd(begr:endr), &
+              rtmCTL%qliv_actual_rf(begr:endr),    &
               rtmCTL%qelec_withd(begr:endr),       &
               rtmCTL%qelec_rf(begr:endr),          &
-              rtmCTL%qelec_actual(begr:endr),      &
+              rtmCTL%qelec_actual_withd(begr:endr), &
+              rtmCTL%qelec_actual_rf(begr:endr),   &
               rtmCTL%qmfc_withd(begr:endr),        &
               rtmCTL%qmfc_rf(begr:endr),           &
-              rtmCTL%qmfc_actual(begr:endr),       &
+              rtmCTL%qmfc_actual_withd(begr:endr), &
+              rtmCTL%qmfc_actual_rf(begr:endr),    &
               rtmCTL%qmin_withd(begr:endr),        &
               rtmCTL%qmin_rf(begr:endr),           &
-              rtmCTL%qmin_actual(begr:endr),       &
+              rtmCTL%qmin_actual_withd(begr:endr), &
+              rtmCTL%qmin_actual_rf(begr:endr),    &
               rtmCTL%qirrig_actual(begr:endr),     &
               stat=ier)
      if (ier /= 0) then
@@ -388,19 +398,24 @@ module RunoffMod
      rtmCTL%qirrig(:)       = 0._r8
      rtmCTL%qdom_withd(:)   = 0._r8
      rtmCTL%qdom_rf(:)      = 0._r8
-     rtmCTL%qdom_actual(:)  = 0._r8
+     rtmCTL%qdom_actual_withd(:) = 0._r8
+     rtmCTL%qdom_actual_rf(:) = 0._r8
      rtmCTL%qliv_withd(:)   = 0._r8
      rtmCTL%qliv_rf(:)      = 0._r8
-     rtmCTL%qliv_actual(:)  = 0._r8
+     rtmCTL%qliv_actual_withd(:)  = 0._r8
+     rtmCTL%qliv_actual_rf(:)  = 0._r8
      rtmCTL%qelec_withd(:)  = 0._r8
      rtmCTL%qelec_rf(:)     = 0._r8
-     rtmCTL%qelec_actual(:) = 0._r8
+     rtmCTL%qelec_actual_withd(:) = 0._r8
+     rtmCTL%qelec_actual_rf(:) = 0._r8
      rtmCTL%qmfc_withd(:)   = 0._r8
      rtmCTL%qmfc_rf(:)      = 0._r8
-     rtmCTL%qmfc_actual(:)  = 0._r8
+     rtmCTL%qmfc_actual_withd(:)  = 0._r8
+     rtmCTL%qmfc_actual_rf(:)  = 0._r8
      rtmCTL%qmin_withd(:)   = 0._r8
      rtmCTL%qmin_rf(:)      = 0._r8
-     rtmCTL%qmin_actual(:)  = 0._r8
+     rtmCTL%qmin_actual_withd(:)  = 0._r8
+     rtmCTL%qmin_actual_rf(:)  = 0._r8
      rtmCTL%qirrig_actual(:)= 0._r8
      rtmCTL%volr_mch(:)     = 0._r8
  

@@ -1460,11 +1460,16 @@ module RtmMod
        rtmCTL%direct = 0._r8
        rtmCTL%flood = 0._r8
        rtmCTL%qirrig_actual = 0._r8
-       rtmCTL%qdom_actual = 0._r8
-       rtmCTL%qliv_actual = 0._r8
-       rtmCTL%qelec_actual = 0._r8
-       rtmCTL%qmfc_actual = 0._r8
-       rtmCTL%qmin_actual = 0._r8
+       rtmCTL%qdom_actual_withd = 0._r8
+       rtmCTL%qliv_actual_withd = 0._r8
+       rtmCTL%qelec_actual_withd = 0._r8
+       rtmCTL%qmfc_actual_withd = 0._r8
+       rtmCTL%qmin_actual_withd = 0._r8
+       rtmCTL%qdom_actual_rf = 0._r8
+       rtmCTL%qliv_actual_rf= 0._r8
+       rtmCTL%qelec_actual_rf = 0._r8
+       rtmCTL%qmfc_actual_rf = 0._r8
+       rtmCTL%qmin_actual_rf = 0._r8
        rtmCTL%runofflnd = spval
        rtmCTL%runoffocn = spval
        rtmCTL%dvolrdt = 0._r8
@@ -1501,8 +1506,8 @@ module RtmMod
                 budget_terms(26,nt) = budget_terms(26,nt) + rtmCTL%qmin_rf(nr)
                 budget_terms(27,nt) = budget_terms(27,nt) + rtmCTL%qirrig(nr) &
                         + rtmCTL%qdom_withd(nr) + rtmCTL%qliv_withd(nr) + rtmCTL%qelec_withd(nr) &
-                        + rtmCTL%qmfc_withd(nr) + rtmCTL%qmin_withd(nr) - rtmCTL%qdom_rf(nr) &
-                        - rtmCTL%qliv_rf(nr) - rtmCTL%qelec_rf(nr) - rtmCTL%qmfc_rf(nr) - rtmCTL%qmin_rf(nr)
+                        + rtmCTL%qmfc_withd(nr) + rtmCTL%qmin_withd(nr) + rtmCTL%qdom_rf(nr) &
+                        + rtmCTL%qliv_rf(nr) + rtmCTL%qelec_rf(nr) + rtmCTL%qmfc_rf(nr) + rtmCTL%qmin_rf(nr)
              endif
           enddo
           enddo
@@ -1527,11 +1532,17 @@ module RtmMod
        call t_startf('mosartr_sectorwater')
        nt = 1 
        rtmCTL%qirrig_actual = 0._r8
-       rtmCTL%qdom_actual = 0._r8
-       rtmCTL%qliv_actual = 0._r8
-       rtmCTL%qelec_actual = 0._r8
-       rtmCTL%qmin_actual = 0._r8
-       rtmCTL%qmfc_actual = 0._r8
+       rtmCTL%qdom_actual_withd = 0._r8
+       rtmCTL%qliv_actual_withd = 0._r8
+       rtmCTL%qelec_actual_withd = 0._r8
+       rtmCTL%qmin_actual_withd = 0._r8
+       rtmCTL%qmfc_actual_withd = 0._r8
+       rtmCTL%qdom_actual_rf = 0._r8
+       rtmCTL%qliv_actual_rf = 0._r8
+       rtmCTL%qelec_actual_rf = 0._r8
+       rtmCTL%qmin_actual_rf = 0._r8
+       rtmCTL%qmfc_actual_rf = 0._r8
+       
        do nr = rtmCTL%begr,rtmCTL%endr
    
              ! calculate volume of irrigation flux during timestep
@@ -1622,11 +1633,11 @@ module RtmMod
              ! i.e. the rate actually removed from the main channel
              ! if irrig_volume is greater than TRunoff%wr
              rtmCTL%qirrig_actual(nr) = - irrig_volume / coupling_period
-             rtmCTL%qdom_actual(nr) = - dom_volume / coupling_period
-             rtmCTL%qelec_actual(nr) = - elec_volume / coupling_period
-             rtmCTL%qliv_actual(nr) = - liv_volume / coupling_period
-             rtmCTL%qmfc_actual(nr) = - mfc_volume / coupling_period
-             rtmCTL%qmin_actual(nr) = - min_volume / coupling_period
+             rtmCTL%qdom_actual_withd(nr) = - dom_volume / coupling_period
+             rtmCTL%qelec_actual_withd(nr) = - elec_volume / coupling_period
+             rtmCTL%qliv_actual_withd(nr) = - liv_volume / coupling_period
+             rtmCTL%qmfc_actual_withd(nr) = - mfc_volume / coupling_period
+             rtmCTL%qmin_actual_withd(nr) = - min_volume / coupling_period
    
              ! remove withdrawals for all sectors and add the return flows to wr (main channel)
              ! the return flows are scaled to the actual withdrawals (irrigation have no return flow)
@@ -1634,28 +1645,28 @@ module RtmMod
                      - elec_volume - liv_volume - mfc_volume - min_volume
             
             if (rtmCTL%qdom_withd(nr) /= 0) then
-               rtmCTL%qdom_rf(nr) = (rtmCTL%qdom_actual(nr)/rtmCTL%qdom_withd(nr))*rtmCTL%qdom_rf(nr)
-               TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) + rtmCTL%qdom_rf(nr)*coupling_period
+               rtmCTL%qdom_actual_rf(nr) = (rtmCTL%qdom_actual_withd(nr)/rtmCTL%qdom_withd(nr))*rtmCTL%qdom_rf(nr)
+               TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) + rtmCTL%qdom_actual_rf(nr)*coupling_period
             endif
 
             if (rtmCTL%qliv_withd(nr) /= 0) then
-               rtmCTL%qliv_rf(nr) = (rtmCTL%qliv_actual(nr)/rtmCTL%qliv_withd(nr))*rtmCTL%qliv_rf(nr)
-               TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) + rtmCTL%qliv_rf(nr)*coupling_period
+               rtmCTL%qliv_actual_rf(nr) = (rtmCTL%qliv_actual_withd(nr)/rtmCTL%qliv_withd(nr))*rtmCTL%qliv_rf(nr)
+               TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) + rtmCTL%qliv_actual_rf(nr)*coupling_period
             endif
             
             if (rtmCTL%qelec_withd(nr) /= 0) then
-               rtmCTL%qelec_rf(nr) = (rtmCTL%qelec_actual(nr)/rtmCTL%qelec_withd(nr))*rtmCTL%qelec_rf(nr)
-               TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) + rtmCTL%qelec_rf(nr)*coupling_period
+               rtmCTL%qelec_actual_rf(nr) = (rtmCTL%qelec_actual_withd(nr)/rtmCTL%qelec_withd(nr))*rtmCTL%qelec_rf(nr)
+               TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) + rtmCTL%qelec_actual_rf(nr)*coupling_period
             endif
             
             if (rtmCTL%qmfc_withd(nr) /= 0) then
-               rtmCTL%qmfc_rf(nr) = (rtmCTL%qmfc_actual(nr)/rtmCTL%qmfc_withd(nr))*rtmCTL%qmfc_rf(nr)
-               TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) + rtmCTL%qmfc_rf(nr)*coupling_period
+               rtmCTL%qmfc_actual_rf(nr) = (rtmCTL%qmfc_actual_withd(nr)/rtmCTL%qmfc_withd(nr))*rtmCTL%qmfc_rf(nr)
+               TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) + rtmCTL%qmfc_actual_rf(nr)*coupling_period
             endif
             
             if (rtmCTL%qmin_withd(nr) /= 0) then
-               rtmCTL%qmin_rf(nr) = (rtmCTL%qmin_actual(nr)/rtmCTL%qmin_withd(nr))*rtmCTL%qmin_rf(nr)
-               TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) + rtmCTL%qmin_rf(nr)*coupling_period
+               rtmCTL%qmin_actual_rf(nr) = (rtmCTL%qmin_actual_withd(nr)/rtmCTL%qmin_withd(nr))*rtmCTL%qmin_rf(nr)
+               TRunoff%wr(nr,nt) = TRunoff%wr(nr,nt) + rtmCTL%qmin_actual_rf(nr)*coupling_period
             endif
    
    
